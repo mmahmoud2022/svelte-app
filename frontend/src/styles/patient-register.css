@@ -1,0 +1,216 @@
+/* ============================================
+   PATIENT REGISTRATION PAGE STYLES
+   ============================================ */
+
+.register-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-neutral-cream) 0%, var(--color-neutral-offwhite) 50%, #e8f4f2 100%);
+  padding: 2rem 1rem;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  animation: slideDown 0.4s var(--transition-spring);
+}
+
+.register-logo {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-600) 100%);
+}
+
+.register-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--color-primary-700);
+}
+
+/* Step Indicators */
+.step-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 10rem;
+}
+
+.step-circle {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all var(--transition-base);
+  border: 2px solid #e5e7eb;
+  background-color: white;
+  color: #9ca3af;
+  box-shadow: var(--shadow-md);
+}
+
+.step-circle.completed {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-600) 100%);
+  border-color: var(--color-primary-600);
+  color: white;
+  box-shadow: 0 4px 12px rgba(136, 180, 164, 0.3);
+}
+
+.step-circle.active {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-600) 100%);
+  border-color: var(--color-primary-600);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(136, 180, 164, 0.2),
+              0 4px 12px rgba(136, 180, 164, 0.4);
+  animation: shimmer 2s infinite;
+}
+
+.step-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+}
+
+.step-label.completed {
+  color: var(--color-primary-600);
+}
+
+.step-label.active {
+  color: var(--color-primary-700);
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  border-left: 4px solid;
+}
+
+.section-header.primary {
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, rgba(136, 180, 164, 0.1) 50%, var(--color-neutral-offwhite) 100%);
+  border-color: var(--color-primary-500);
+}
+
+.section-header.lavender {
+  background: linear-gradient(135deg, #f5f3ff 0%, rgba(180, 167, 214, 0.1) 50%, var(--color-neutral-offwhite) 100%);
+  border-color: var(--color-accent-lavender);
+}
+
+.section-header.orange {
+  background: linear-gradient(135deg, #fff7ed 0%, rgba(232, 178, 152, 0.1) 50%, var(--color-neutral-offwhite) 100%);
+  border-color: var(--color-accent-rosegold);
+}
+
+.section-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.section-icon.primary {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-600);
+}
+
+.section-icon.lavender {
+  background-color: #f5f3ff;
+  color: var(--color-accent-lavender);
+}
+
+.section-icon.orange {
+  background-color: #fff7ed;
+  color: var(--color-accent-rosegold);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary-700);
+  margin-bottom: 0.25rem;
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Password Toggle Button */
+.password-toggle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  padding-right: 1rem;
+  display: flex;
+  align-items: center;
+  color: #9ca3af;
+  transition: color var(--transition-fast);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.password-toggle:hover {
+  color: var(--color-primary-600);
+}
+
+/* Form Navigation Buttons */
+.form-nav-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.form-nav-buttons button {
+  flex: 1;
+}
+
+/* Back to Login Link */
+.back-to-login {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.back-to-login a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.back-to-login a:hover {
+  color: var(--color-primary-600);
+  gap: 0.75rem;
+}

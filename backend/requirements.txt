@@ -1,0 +1,38 @@
+# FastAPI and Web Framework
+fastapi[standard]==0.115.6
+python-multipart==0.0.20
+
+
+# Database
+sqlalchemy==2.0.36
+alembic==1.14.1
+psycopg2-binary==2.9.10
+asyncpg==0.30.0
+
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.1
+pydantic[email]==2.10.6
+pydantic-settings==2.7.1
+python-dotenv==1.0.1
+
+
+# API Documentation
+pydantic==2.10.6
+
+
+# Logging
+python-json-logger==2.0.7
+
+
+# Email
+boto3==1.35.76  # Amazon SES
+aiosmtplib==3.0.2  # Async SMTP client
+
+
+# Task Queue
+celery==5.4.0
+redis==5.2.1
+flower==2.0.1  # Celery monitoring tool
