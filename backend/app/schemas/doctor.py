@@ -109,13 +109,12 @@ class DoctorPublicProfile(BaseModel):
 # ========== Availability Schemas ==========
 
 class AvailabilityBase(BaseModel):
-    """Base schema pour les créneaux de disponibilité"""
-    date: date
+    """Base schema pour les créneaux de disponibilité récurrents"""
+    day_of_week: int = Field(..., ge=0, le=6, description="Jour de la semaine (0=Dimanche, 1=Lundi, ..., 6=Samedi)")
     start_time: time
     end_time: time
     consultation_type: ConsultationTypeEnum
-    location: Optional[str] = None
-    notes: Optional[str] = None
+    is_available: bool = True
 
     @validator('end_time')
     def validate_time_range(cls, v, values):
@@ -133,8 +132,6 @@ class AvailabilityResponse(AvailabilityBase):
     """Schema de réponse pour un créneau"""
     id: int
     doctor_id: int
-    is_available: bool
-    is_booked: bool
     created_at: datetime
 
     class Config:
@@ -142,6 +139,17 @@ class AvailabilityResponse(AvailabilityBase):
 
 
 # ========== Appointment Schemas ==========
+
+class PatientInfo(BaseModel):
+    """Schema pour les informations du patient"""
+    id: int
+    email: str
+    full_name: str
+    phone: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
 
 class AppointmentBase(BaseModel):
     """Base schema pour les rendez-vous"""
@@ -169,7 +177,9 @@ class AppointmentUpdate(BaseModel):
 class AppointmentStatusUpdate(BaseModel):
     """Schema pour la mise à jour du statut d'un rendez-vous"""
     status: AppointmentStatusEnum
-    doctor_notes: Optional[str] = None
+    notes: Optional[str] = None
+    diagnosis: Optional[str] = None
+    prescription: Optional[str] = None
 
 
 class AppointmentResponse(AppointmentBase):
@@ -182,12 +192,16 @@ class AppointmentResponse(AppointmentBase):
     price: Optional[float]
     is_paid: bool
     doctor_notes: Optional[str]
+    notes: Optional[str]
+    diagnosis: Optional[str]
+    prescription: Optional[str]
     created_at: datetime
     updated_at: Optional[datetime]
     cancelled_at: Optional[datetime]
     completed_at: Optional[datetime]
     
     # Informations patient (pour le médecin)
+    patient: Optional[PatientInfo] = None
     patient_first_name: Optional[str] = None
     patient_last_name: Optional[str] = None
     patient_phone: Optional[str] = None

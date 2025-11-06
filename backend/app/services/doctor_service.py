@@ -162,7 +162,7 @@ class DoctorService:
         doctor_id: int,
         availability_data: AvailabilityCreate
     ) -> DoctorAvailability:
-        """Créer un créneau de disponibilité"""
+        """Créer un créneau de disponibilité récurrent"""
         # Vérifier que le médecin existe
         doctor = db.query(DoctorProfile).filter(DoctorProfile.id == doctor_id).first()
         if not doctor:
@@ -171,11 +171,10 @@ class DoctorService:
                 detail="Profil médecin non trouvé"
             )
         
-        # Vérifier qu'il n'y a pas de chevauchement
+        # Vérifier qu'il n'y a pas de chevauchement pour ce jour de la semaine
         overlapping = db.query(DoctorAvailability).filter(
             DoctorAvailability.doctor_id == doctor_id,
-            DoctorAvailability.date == availability_data.date,
-            DoctorAvailability.is_available == True,
+            DoctorAvailability.day_of_week == availability_data.day_of_week,
             or_(
                 and_(
                     DoctorAvailability.start_time <= availability_data.start_time,
@@ -191,7 +190,7 @@ class DoctorService:
         if overlapping:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ce créneau chevauche une disponibilité existante"
+                detail="Ce créneau chevauche une disponibilité existante pour ce jour"
             )
         
         availability = DoctorAvailability(
@@ -211,24 +210,15 @@ class DoctorService:
         end_date: Optional[date] = None,
         available_only: bool = True
     ) -> List[DoctorAvailability]:
-        """Obtenir les créneaux de disponibilité d'un médecin"""
+        """Obtenir les créneaux de disponibilité récurrents d'un médecin"""
         query = db.query(DoctorAvailability).filter(
             DoctorAvailability.doctor_id == doctor_id
         )
         
         if available_only:
-            query = query.filter(
-                DoctorAvailability.is_available == True,
-                DoctorAvailability.is_booked == False
-            )
+            query = query.filter(DoctorAvailability.is_available == True)
         
-        if start_date:
-            query = query.filter(DoctorAvailability.date >= start_date)
-        
-        if end_date:
-            query = query.filter(DoctorAvailability.date <= end_date)
-        
-        return query.order_by(DoctorAvailability.date, DoctorAvailability.start_time).all()
+        return query.order_by(DoctorAvailability.day_of_week, DoctorAvailability.start_time).all()
 
     @staticmethod
     def delete_availability(db: Session, doctor_id: int, availability_id: int) -> None:
@@ -242,12 +232,6 @@ class DoctorService:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Créneau non trouvé"
-            )
-        
-        if availability.is_booked:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Impossible de supprimer un créneau déjà réservé"
             )
         
         db.delete(availability)
@@ -320,8 +304,13 @@ class DoctorService:
         old_status = appointment.status
         appointment.status = status_update.status
         
-        if status_update.doctor_notes:
-            appointment.doctor_notes = status_update.doctor_notes
+        # Mettre à jour les notes, diagnostic et prescription
+        if status_update.notes:
+            appointment.notes = status_update.notes
+        if status_update.diagnosis:
+            appointment.diagnosis = status_update.diagnosis
+        if status_update.prescription:
+            appointment.prescription = status_update.prescription
         
         # Mettre à jour les timestamps
         if status_update.status == AppointmentStatusEnum.COMPLETED:
@@ -332,13 +321,6 @@ class DoctorService:
                 doctor.total_consultations += 1
         elif status_update.status == AppointmentStatusEnum.CANCELLED:
             appointment.cancelled_at = datetime.utcnow()
-            # Libérer le créneau si applicable
-            if appointment.availability_id:
-                availability = db.query(DoctorAvailability).filter(
-                    DoctorAvailability.id == appointment.availability_id
-                ).first()
-                if availability:
-                    availability.is_booked = False
         
         db.commit()
         db.refresh(appointment)

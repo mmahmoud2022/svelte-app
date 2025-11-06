@@ -108,32 +108,28 @@ class DoctorProfile(Base):
 
 
 class DoctorAvailability(Base):
-    """Créneaux de disponibilité du médecin"""
+    """Créneaux de disponibilité récurrents du médecin (par jour de semaine)"""
     __tablename__ = "doctor_availabilities"
 
     id = Column(Integer, primary_key=True, index=True)
     doctor_id = Column(Integer, ForeignKey("doctor_profiles.id", ondelete="CASCADE"), nullable=False, index=True)
     
-    # Informations du créneau
-    date = Column(Date, nullable=False, index=True)
+    # Informations du créneau récurrent
+    day_of_week = Column(Integer, nullable=False, index=True)  # 0=Dimanche, 1=Lundi, ..., 6=Samedi
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
     
-    # Type et lieu
+    # Type de consultation
     consultation_type = Column(Enum(ConsultationTypeEnum, values_callable=lambda x: [e.value for e in x]), nullable=False)
-    location = Column(String(255), nullable=True)
     
     # Statut
     is_available = Column(Boolean, default=True)
-    is_booked = Column(Boolean, default=False)
     
     # Métadonnées
-    notes = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relations
     doctor = relationship("DoctorProfile", back_populates="availabilities")
-    appointment = relationship("Appointment", back_populates="availability", uselist=False)
 
 
 class Appointment(Base):
@@ -154,6 +150,9 @@ class Appointment(Base):
     reason = Column(Text, nullable=True)
     patient_notes = Column(Text, nullable=True)
     doctor_notes = Column(Text, nullable=True)
+    notes = Column(Text, nullable=True)  # Notes générales
+    diagnosis = Column(Text, nullable=True)  # Diagnostic médical
+    prescription = Column(Text, nullable=True)  # Prescription
     
     # Statut
     status = Column(Enum(AppointmentStatusEnum, values_callable=lambda x: [e.value for e in x]), default=AppointmentStatusEnum.PENDING, index=True)
@@ -171,7 +170,6 @@ class Appointment(Base):
     # Relations
     doctor = relationship("DoctorProfile", back_populates="appointments")
     patient = relationship("User", back_populates="appointments")
-    availability = relationship("DoctorAvailability", back_populates="appointment")
 
 
 class DoctorReview(Base):
