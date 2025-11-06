@@ -30,7 +30,7 @@
       return;
     }
 
-    if (newPassword.length < 8) {
+    if (!validatePassword(newPassword)) {
       error = 'Le mot de passe doit contenir au moins 8 caractères.';
       return;
     }

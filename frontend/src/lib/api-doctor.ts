@@ -248,9 +248,11 @@ export interface AvailabilityCreate {
   is_available?: boolean;
 }
 
-// AppointmentCreate is not used - appointments are created by patients
-// keeping AppointmentStatusUpdate for updating appointment status
-
+/**
+ * Note: AppointmentCreate interface is not used in this codebase.
+ * Appointments are created by patients, not doctors.
+ * Keeping AppointmentStatusUpdate for updating existing appointment status.
+ */
 export interface AppointmentStatusUpdate {
   status: AppointmentStatus;
   notes?: string;
@@ -309,10 +311,12 @@ export const deleteAvailability = async (availabilityId: number): Promise<void> 
   await api.delete(`/api/v1/doctors/availability/${availabilityId}`);
 };
 
-// Appointment Management
-// Note: Appointments are created by patients, not doctors
-// Doctors can only view and update status of existing appointments
-
+/**
+ * Appointment Management
+ * 
+ * Note: Appointments are created by patients, not doctors.
+ * Doctors can only view and update status of existing appointments.
+ */
 export const getDoctorAppointments = async (
   page: number = 1,
   pageSize: number = 10,
