@@ -31,6 +31,7 @@ from app.schemas.doctor import (
     DoctorSettingsResponse,
     DoctorStatistics,
     PatientBasicInfo,
+    PatientInfo,
     AppointmentListResponse,
     MessageListResponse,
     ReviewListResponse,
@@ -171,7 +172,6 @@ async def get_my_appointments(
         response = AppointmentResponse.model_validate(appt)
         # Créer l'objet patient pour le frontend
         if appt.patient:
-            from app.schemas.doctor import PatientInfo
             response.patient = PatientInfo(
                 id=appt.patient.id,
                 email=appt.patient.email,
@@ -210,7 +210,6 @@ async def get_appointment_details(
     # Enrichir avec les données patient
     response = AppointmentResponse.model_validate(appointment)
     if appointment.patient:
-        from app.schemas.doctor import PatientInfo
         response.patient = PatientInfo(
             id=appointment.patient.id,
             email=appointment.patient.email,
@@ -245,7 +244,6 @@ async def update_appointment_status(
     # Enrichir avec les données patient
     response = AppointmentResponse.model_validate(appointment)
     if appointment.patient:
-        from app.schemas.doctor import PatientInfo
         response.patient = PatientInfo(
             id=appointment.patient.id,
             email=appointment.patient.email,

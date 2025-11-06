@@ -176,13 +176,20 @@ class DoctorService:
             DoctorAvailability.doctor_id == doctor_id,
             DoctorAvailability.day_of_week == availability_data.day_of_week,
             or_(
+                # Le nouveau créneau commence pendant un créneau existant
                 and_(
                     DoctorAvailability.start_time <= availability_data.start_time,
                     DoctorAvailability.end_time > availability_data.start_time
                 ),
+                # Le nouveau créneau se termine pendant un créneau existant
                 and_(
                     DoctorAvailability.start_time < availability_data.end_time,
                     DoctorAvailability.end_time >= availability_data.end_time
+                ),
+                # Le nouveau créneau englobe complètement un créneau existant
+                and_(
+                    DoctorAvailability.start_time >= availability_data.start_time,
+                    DoctorAvailability.end_time <= availability_data.end_time
                 )
             )
         ).first()
