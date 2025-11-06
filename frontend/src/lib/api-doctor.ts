@@ -248,12 +248,8 @@ export interface AvailabilityCreate {
   is_available?: boolean;
 }
 
-export interface AppointmentCreate {
-  patient_id: number;
-  appointment_date: string;
-  consultation_type: ConsultationType;
-  reason?: string;
-}
+// AppointmentCreate is not used - appointments are created by patients
+// keeping AppointmentStatusUpdate for updating appointment status
 
 export interface AppointmentStatusUpdate {
   status: AppointmentStatus;
@@ -314,10 +310,8 @@ export const deleteAvailability = async (availabilityId: number): Promise<void> 
 };
 
 // Appointment Management
-export const createAppointment = async (data: AppointmentCreate): Promise<Appointment> => {
-  const response = await api.post<Appointment>('/api/v1/doctors/appointments', data);
-  return response.data;
-};
+// Note: Appointments are created by patients, not doctors
+// Doctors can only view and update status of existing appointments
 
 export const getDoctorAppointments = async (
   page: number = 1,
@@ -343,11 +337,6 @@ export const updateAppointmentStatus = async (
     `/api/v1/doctors/appointments/${appointmentId}/status`,
     data
   );
-  return response.data;
-};
-
-export const getPatientAppointments = async (patientId: number): Promise<Appointment[]> => {
-  const response = await api.get<Appointment[]>(`/api/v1/doctors/patients/${patientId}/appointments`);
   return response.data;
 };
 
@@ -485,11 +474,9 @@ export default {
   deleteAvailability,
   
   // Appointments
-  createAppointment,
   getDoctorAppointments,
   getAppointmentById,
   updateAppointmentStatus,
-  getPatientAppointments,
   
   // Reviews
   getDoctorReviews,
