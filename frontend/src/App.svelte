@@ -12,6 +12,9 @@
   import AdminLogin from './routes/admin/Login.svelte';
   import AdminRegister from './routes/admin/Register.svelte';
   import AdminDashboard from './routes/admin/AdminDashboard.svelte';
+  import VerifyEmail from './routes/VerifyEmail.svelte';
+  import RequestPasswordReset from './routes/RequestPasswordReset.svelte';
+  import ResetPassword from './routes/ResetPassword.svelte';
 
   let currentPath = '/';
 
@@ -35,6 +38,9 @@
     if (currentPath === '/admin/login') return AdminLogin;
     if (currentPath === '/admin/register') return AdminRegister;
     if (currentPath === '/admin' || currentPath === '/admin/dashboard') return AdminDashboard;
+    if (currentPath === '/verify-email' || currentPath.startsWith('/verify-email?')) return VerifyEmail;
+    if (currentPath === '/forgot-password') return RequestPasswordReset;
+    if (currentPath === '/reset-password' || currentPath.startsWith('/reset-password?')) return ResetPassword;
     return Home; // Default fallback
   })();
 </script>

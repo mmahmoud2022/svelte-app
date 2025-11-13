@@ -31,6 +31,7 @@ from app.schemas.doctor import (
     DoctorSettingsResponse,
     DoctorStatistics,
     PatientBasicInfo,
+    PatientInfo,
     AppointmentListResponse,
     MessageListResponse,
     ReviewListResponse,
@@ -169,6 +170,15 @@ async def get_my_appointments(
     items = []
     for appt in appointments:
         response = AppointmentResponse.model_validate(appt)
+        # Créer l'objet patient pour le frontend
+        if appt.patient:
+            response.patient = PatientInfo(
+                id=appt.patient.id,
+                email=appt.patient.email,
+                full_name=appt.patient.full_name,
+                phone=appt.patient.phone
+            )
+        # Garder aussi les champs individuels pour compatibilité
         response.patient_first_name = appt.patient.first_name
         response.patient_last_name = appt.patient.last_name
         response.patient_phone = appt.patient.phone
@@ -199,6 +209,13 @@ async def get_appointment_details(
     
     # Enrichir avec les données patient
     response = AppointmentResponse.model_validate(appointment)
+    if appointment.patient:
+        response.patient = PatientInfo(
+            id=appointment.patient.id,
+            email=appointment.patient.email,
+            full_name=appointment.patient.full_name,
+            phone=appointment.patient.phone
+        )
     response.patient_first_name = appointment.patient.first_name
     response.patient_last_name = appointment.patient.last_name
     response.patient_phone = appointment.patient.phone
@@ -226,6 +243,13 @@ async def update_appointment_status(
     
     # Enrichir avec les données patient
     response = AppointmentResponse.model_validate(appointment)
+    if appointment.patient:
+        response.patient = PatientInfo(
+            id=appointment.patient.id,
+            email=appointment.patient.email,
+            full_name=appointment.patient.full_name,
+            phone=appointment.patient.phone
+        )
     response.patient_first_name = appointment.patient.first_name
     response.patient_last_name = appointment.patient.last_name
     response.patient_phone = appointment.patient.phone

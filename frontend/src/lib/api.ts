@@ -160,6 +160,11 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface MessageResponse {
+  message: string;
+  success?: boolean;
+}
+
 // =============== API Functions ===============
 
 // Statistics (Public)
@@ -212,6 +217,42 @@ export const getCurrentUser = async (): Promise<User> => {
   return response.data;
 };
 
+// Email verification
+export const verifyEmail = async (token: string): Promise<MessageResponse> => {
+  const response = await api.post<MessageResponse>('/api/v1/auth/verify-email', { token });
+  return response.data;
+};
+
+export const resendVerification = async (email: string): Promise<MessageResponse> => {
+  const response = await api.post<MessageResponse>('/api/v1/auth/resend-verification', { email });
+  return response.data;
+};
+
+// Password reset
+export const requestPasswordReset = async (email: string): Promise<MessageResponse> => {
+  const response = await api.post<MessageResponse>('/api/v1/auth/request-password-reset', { email });
+  return response.data;
+};
+
+export const resetPassword = async (token: string, newPassword: string): Promise<MessageResponse> => {
+  const response = await api.post<MessageResponse>('/api/v1/auth/reset-password', {
+    token,
+    new_password: newPassword,
+  });
+  return response.data;
+};
+
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string
+): Promise<MessageResponse> => {
+  const response = await api.post<MessageResponse>('/api/v1/auth/change-password', {
+    current_password: currentPassword,
+    new_password: newPassword,
+  });
+  return response.data;
+};
+
 // Admin endpoints
 export const getAllUsers = async (): Promise<User[]> => {
   const response = await api.get<User[]>('/api/v1/admin/users');
@@ -252,6 +293,21 @@ export const activateUser = async (userId: number): Promise<AdminActionResponse>
 
 export const deleteUser = async (userId: number): Promise<AdminActionResponse> => {
   const response = await api.delete<AdminActionResponse>(`/api/v1/admin/users/${userId}`);
+  return response.data;
+};
+
+export const getAllDoctors = async (): Promise<User[]> => {
+  const response = await api.get<User[]>('/api/v1/admin/doctors/all');
+  return response.data;
+};
+
+export const getUserDetails = async (userId: number): Promise<User> => {
+  const response = await api.get<User>(`/api/v1/admin/users/${userId}`);
+  return response.data;
+};
+
+export const getAllPatients = async (): Promise<User[]> => {
+  const response = await api.get<User[]>('/api/v1/admin/patients');
   return response.data;
 };
 
